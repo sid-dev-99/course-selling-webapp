@@ -7,7 +7,9 @@ import os
 load_dotenv()
 
 student_bp = Blueprint('student', __name__)
-connect('students_db', host=os.getenv('url'))
+mongo_url = os.getenv('url')
+
+connect('students_db', host=mongo_url)
 
 @student_bp.route('/students/<student_id>', methods=['GET'])
 def get_student(student_id):
@@ -26,6 +28,7 @@ def delete_student(student_id):
 
 @student_bp.route('/students', methods=['POST'])
 def add_student():
+    print("received a post req ")
     data = request.get_json()
     student = Student.add_student(
         name=data['name'],
@@ -34,3 +37,5 @@ def add_student():
         password=data['password']
     )
     return jsonify(student.to_json()), 201
+
+
